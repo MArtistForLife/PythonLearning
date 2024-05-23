@@ -32,13 +32,10 @@ def isLeapYear(year):
         if year % 100 == 0:
             if year % 400 == 0:
                 return True
-                print(f"{year} is a leap year!")
             elif year % 400 != 0:
-                print(f"Huh, {year} is not a leap year.")
                 return False
         elif year % 100 != 0:
             return True
-            print(f"{year} is a leap year!")
 
 def daysInMonth(year, month):
     monthsByDays = [31,28,31,30,31,30,31,31,30,31,30,31]
