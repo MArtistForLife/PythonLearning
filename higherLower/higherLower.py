@@ -322,6 +322,7 @@ def game():
     usedIndices.add(indexB)
 
     while not gameOver:
+        
         choiceA = data[indexA]
         choiceB = data[indexB]
 
@@ -358,7 +359,7 @@ def game():
                         print(f"Correct! {choiceB['name']} has {choiceB['follower_count']} million followers, while {choiceA['name']} has {choiceA['follower_count']} million.")
                         userScore += 1
                         print(f"Your current score is {userScore}.")
-                        
+
                         while True:
                             indexA = random.randint(0, len(data) - 1) 
                             if indexA != indexB and indexA not in usedIndices: 
