@@ -53,26 +53,38 @@ def checkDrinkCost(drinkName):
 def checkResources():
     #return resources this works, but it only returns the dictionary in 1 line
     for ingredient, amount in resources.items():
-        print(f"{ingredient}: {amount}")
-    
+        if ingredient == "water" or ingredient == "milk":
+            print(f"{ingredient}: {amount} mL") #liquids are in mL
+        elif ingredient == "coffee":
+            print(f"{ingredient}: {amount} g") #solid is in g
+
 #FUNCTION to process coins
 def processCoins(drinkPrice):
     print("Please insert coins.")
-    quarters = int(input("How many quarters? ")) * 0.25
-    dimes = int(input("How many dimes? ")) * 0.10
-    nickles = int(input("How many nickels? ")) * 0.05
-    pennies = int(input("How many pennies? ")) * 0.01
-    customerPayment = quarters + dimes + nickles + pennies
+    try:
+        quarters = int(input("How many quarters? ")) * 0.25
+        dimes = int(input("How many dimes? ")) * 0.10
+        nickles = int(input("How many nickels? ")) * 0.05
+        pennies = int(input("How many pennies? ")) * 0.01
+    except ValueError: #to account for invaid inputs
+        print("That's invalid! Please enter only whole numbers!")
+        return False #False meaning this did not go successfully (i.e., error)
     
+    customerPayment = quarters + dimes + nickles + pennies
     difference = round(drinkPrice - customerPayment, 2)
 
     if customerPayment > drinkPrice:
         customerChange = abs(difference)
         print(f"Here is ${customerChange:.2f} in change.") #gives the customer change to 2 decimal places
         return True #payment is successful
+    #elif customerPayment == drinkPrice: 
+    #this doesn't work because then it can say I'm short by roughly $0.00
+    elif abs(difference) < 0.01: #say, if it is like 0.002
+        print("You paid the exact amount, great!")
+        return True #exact payment is ALSO successful
     elif customerPayment < drinkPrice:
         shortBy = abs(round(difference, 2))
-        print(f"Whoops, that's not enough. You're short by ${shortBy:.2f}, so you're refunded.")
+        print(f"Whoops, that's not enough. You're short by ${shortBy:.2f}, so you're refunded.") #lol, I DID specify the specific amount you're short by
         return False
 
 #FUNCTION to check if making drink is feasible given current resources
@@ -84,8 +96,17 @@ def canWeMakeDrink(drinkName):
         if ingredient not in resources:
             return False, f"{ingredient} isn't available."
         if resources[ingredient] < neededAmt: #looks at ingredient amt in resources
-            return False, f"There isn't enough {ingredient}. We need {neededAmt} and there is only {resources[ingredient]}."
-            #resources[ingredient] accesses the amount of a specific ingredient in the resources dictionary
+            if ingredient == "water" or ingredient == "milk":
+                if {resources[ingredient]} == 1:
+                    return False, f"There isn't enough {ingredient}. We need {neededAmt} mL and there is only {resources[ingredient]} mL."
+                elif {resources[ingredient]} != 1:  
+                    return False, f"There isn't enough {ingredient}. We need {neededAmt} mL and there are {resources[ingredient]} mL."
+                    #resources[ingredient] accesses the amount of a specific ingredient in the resources dictionary
+            elif ingredient == "coffee":
+                if {resources[ingredient]} == 1:
+                    return False, f"There isn't enough {ingredient}. We need {neededAmt} g and there is only {resources[ingredient]} g."
+                elif {resources[ingredient]} != 1:  
+                    return False, f"There isn't enough {ingredient}. We need {neededAmt} g and there are {resources[ingredient]} g."                
 
     return True, None #if all ingredients are available in the quantities needed
     #None indicates that there is no error message from this
@@ -98,7 +119,7 @@ def makeDrink(drinkName):
     print(f"Here is your {drinkName}. Enjoy!")
 
 while True:
-    drinkName = input("What would you like? (espresso, latte, cappuccino, OR 'report' for update on inventory): ").lower()
+    drinkName = input("What would you like? (espresso, latte, cappuccino, 'report' for update on inventory, OR 'off' to turn off the machine): ").lower()
 
     if drinkName in MENU: #if the given drink name is something in the menu dictionary
         drinkPrice = checkDrinkCost(drinkName) #runs the function to check cost of given drink
@@ -121,10 +142,3 @@ while True:
         break
     else:
         print("Invalid response! Try again. ")
-
-
-
-
-        
-
-
